@@ -106,6 +106,17 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  memset(uart_buf, 0, sizeof(uart_buf));
+	  sprintf(uart_buf, "PA%04d\n", potentiometer[0]);
+	  HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, sizeof(uart_buf), 10);
+
+
+	  memset(uart_buf, 0, sizeof(uart_buf));
+	  sprintf(uart_buf, "PB%04d\n", potentiometer[1]);
+	  HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, sizeof(uart_buf), 10);
+
+	  HAL_Delay(10);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -171,25 +182,28 @@ void SystemClock_Config(void)
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 
-	if(GPIO_Pin==SW1_Pin){
-		current_tick_1 = HAL_GetTick();
-	}
-	if(GPIO_Pin==SW2_Pin){
-		current_tick_2 = HAL_GetTick();
-	}
+//	if(GPIO_Pin==SW1_Pin){
+//		current_tick_1 = HAL_GetTick();
+//	}
+//	if(GPIO_Pin==SW2_Pin){
+//		current_tick_2 = HAL_GetTick();
+//	}
+//
+//	if(GPIO_Pin==SW1_Pin && (current_tick_1 - old_tick_1 > 300)){
+//		old_tick_1 = current_tick_1;
+//		memset(uart_buf, 0, sizeof(uart_buf));
+//		sprintf(uart_buf, "PA%04d\n", potentiometer[0]);
+//		HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, sizeof(uart_buf), 10);
+//	}
+//	if(GPIO_Pin==SW2_Pin && (current_tick_2 - old_tick_2 > 300)){
+//		old_tick_2 = current_tick_2;
+//		memset(uart_buf, 0, sizeof(uart_buf));
+//		sprintf(uart_buf, "PB%04d\n", potentiometer[1]);
+//		HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, sizeof(uart_buf), 10);
+//
+//	}
 
-	if(GPIO_Pin==SW1_Pin && (current_tick_1 - old_tick_1 > 300)){
-		old_tick_1 = current_tick_1;
-		memset(uart_buf, 0, sizeof(uart_buf));
-		sprintf(uart_buf, "PA%04d\n", potentiometer[0]);
-		HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, sizeof(uart_buf), 10);
-	}
-	if(GPIO_Pin==SW2_Pin && (current_tick_2 - old_tick_2 > 300)){
-		old_tick_2 = current_tick_2;
-		memset(uart_buf, 0, sizeof(uart_buf));
-		sprintf(uart_buf, "PB%04d\n", potentiometer[1]);
-		HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, sizeof(uart_buf), 10);
-	}
+
 }
 /* USER CODE END 4 */
 
