@@ -53,12 +53,23 @@ uint32_t current_tick_2;
 uint32_t old_tick_2;
 uint32_t potentiometer[2];
 char uart_buf[7];
+
+
+#define ARRAYNUM 10
+int readings[2][ARRAYNUM]={0,};
+int idx = 0;
+int total[2] = {0,};
+uint32_t average[2] ={0,};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+int _write(int file, char* p, int len){
+	HAL_UART_Transmit(&huart3, p, len, 10);
+	return len;
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -106,16 +117,39 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+	  total[0] = total[0] - readings[0][idx];
+	  total[1] = total[1] - readings[1][idx];
+	  readings[0][idx] = potentiometer[0];
+	  readings[1][idx] = potentiometer[1];
+	  total[0] = total[0] + readings[0][idx];
+	  total[1] = total[1] + readings[1][idx];
+
+	  idx = idx + 1;
+
+	  if (idx >= ARRAYNUM) {
+		  idx = 0;
+	  }
+
+	  average[0] = total[0] / ARRAYNUM;
+	  average[1] = total[1] / ARRAYNUM;
+
 	  memset(uart_buf, 0, sizeof(uart_buf));
-	  sprintf(uart_buf, "PA%04d\n", potentiometer[0]);
+	  sprintf(uart_buf, "PA%04d\n", average[0]);
 	  HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, sizeof(uart_buf), 10);
 
 
 	  memset(uart_buf, 0, sizeof(uart_buf));
-	  sprintf(uart_buf, "PB%04d\n", potentiometer[1]);
+	  sprintf(uart_buf, "PB%04d\n", average[1]);
 	  HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, sizeof(uart_buf), 10);
 
 	  HAL_Delay(10);
+
+
+	  //	  printf("%d, ", average[0]);
+	  //	  printf("%d, ", average[1]);
+	  //	  printf("%d, ", potentiometer[0]);
+	  //	  printf("%d\r\n", potentiometer[1]);
 
     /* USER CODE END WHILE */
 
